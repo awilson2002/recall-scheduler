@@ -1,0 +1,22 @@
+{
+  "name": "recall",
+  "version": "0.1.0",
+  "description": "SM-2 spaced repetition scheduler, library plus CLI",
+  "type": "module",
+  "main": "./dist/scheduler.js",
+  "types": "./dist/scheduler.d.ts",
+  "bin": {
+    "recall": "./dist/cli.js"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc"
+  },
+  "license": "MIT",
+  "dependencies": {},
+  "devDependencies": {
+    "typescript": "^5.4.0"
+  }
+}
