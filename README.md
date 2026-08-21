@@ -50,6 +50,12 @@ node dist/cli.js review deck.json   # walk through due cards interactively
 then asks you to grade yourself from 0 to 5. The deck file is rewritten
 after every single grade, so an interrupted session doesn't lose progress.
 
+## tests
+
+```
+npm test    # compiles src/ and runs src/scheduler.test.ts under node --test
+```
+
 ## status
 
 Early. The scheduler and CLI both work end to end, but there's no deck
