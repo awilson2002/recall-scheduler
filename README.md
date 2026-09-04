@@ -44,11 +44,19 @@ npx tsc                              # compile src/ to dist/
 node dist/cli.js add deck.json "capital of Peru" "Lima"
 node dist/cli.js due deck.json       # list cards due for review
 node dist/cli.js review deck.json   # walk through due cards interactively
+node dist/cli.js export deck.json deck.csv   # back up the whole deck
+node dist/cli.js import deck.json deck.csv   # bring cards back in
 ```
 
 `review` shows the front, waits for you to press enter, reveals the back,
 then asks you to grade yourself from 0 to 5. The deck file is rewritten
 after every single grade, so an interrupted session doesn't lose progress.
+
+`export` writes every field, including scheduling state, so re-importing
+that file updates matching cards (by id) rather than duplicating them.
+`import` also accepts a plain `front,back` CSV, which is the easier way to
+bulk-add cards from a spreadsheet or word list — each row becomes a new
+card with fresh scheduling state.
 
 ## tests
 
@@ -58,10 +66,11 @@ npm test    # compiles src/ and runs src/scheduler.test.ts under node --test
 
 ## status
 
-Early. The scheduler and CLI both work end to end, but there's no deck
-import/export beyond hand-editing the JSON, and no way to browse or edit
-cards after they're added. See the code in `src/` — it's short enough to
-read in one sitting.
+Early. The scheduler and CLI both work end to end, and decks can be
+imported/exported as CSV, but there's still no way to browse, edit, or
+delete cards after they're added, no stats, and no support for more than
+one deck at a time. See the code in `src/` — it's short enough to read in
+one sitting.
 
 ## license
 

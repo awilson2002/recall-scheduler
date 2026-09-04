@@ -1,8 +1,10 @@
 #!/usr/bin/env node
+import { readFileSync, writeFileSync } from "node:fs";
 import { createInterface } from "node:readline/promises";
 import { stdin, stdout } from "node:process";
 import { createCard, isDue, review, type Grade } from "./scheduler.js";
 import { loadDeck, saveDeck, nextId } from "./store.js";
+import { toCsv, fromCsv } from "./importexport.js";
 
 function usage(): void {
   console.log(
@@ -11,6 +13,8 @@ function usage(): void {
       "  recall add <deck.json> <front> <back>",
       "  recall due <deck.json>",
       "  recall review <deck.json>",
+      "  recall export <deck.json> <out.csv>",
+      "  recall import <deck.json> <in.csv>",
     ].join("\n")
   );
 }
@@ -71,6 +75,20 @@ async function cmdReview(deckPath: string): Promise<void> {
   console.log("\ndone for now");
 }
 
+function cmdExport(deckPath: string, outPath: string): void {
+  const deck = loadDeck(deckPath);
+  writeFileSync(outPath, toCsv(deck), "utf8");
+  console.log(`exported ${deck.cards.length} card(s) to ${outPath}`);
+}
+
+function cmdImport(deckPath: string, inPath: string): void {
+  const deck = loadDeck(deckPath);
+  const csv = readFileSync(inPath, "utf8");
+  const { added, updated } = fromCsv(csv, deck);
+  saveDeck(deckPath, deck);
+  console.log(`added ${added} card(s), updated ${updated} card(s)`);
+}
+
 async function main(): Promise<void> {
   const [command, ...rest] = process.argv.slice(2);
 
@@ -91,6 +109,18 @@ async function main(): Promise<void> {
       const [deckPath] = rest;
       if (!deckPath) return usage();
       await cmdReview(deckPath);
+      break;
+    }
+    case "export": {
+      const [deckPath, outPath] = rest;
+      if (!deckPath || !outPath) return usage();
+      cmdExport(deckPath, outPath);
+      break;
+    }
+    case "import": {
+      const [deckPath, inPath] = rest;
+      if (!deckPath || !inPath) return usage();
+      cmdImport(deckPath, inPath);
       break;
     }
     default:
